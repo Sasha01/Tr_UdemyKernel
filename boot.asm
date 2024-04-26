@@ -1,7 +1,26 @@
-ORG 0x7c00 ; bios loads to address 0x7C00
+; set origin to address 0
+; we will use segment registers to make sure the actual address is 0x7C00
+ORG 0
+
 BITS 16 ; assemble should only use 16 bit codes
 
 start:
+    cli ; clear interrupts
+
+    ; starting critical section
+
+    mov ax, 0x7C0
+    mov ds, ax ; set data segment
+    mov es, ax ; set extra segment
+
+    ; set the stack segment to 0x00, because we will use just the stack pointer
+    mov ax, 0x00
+    mov ss, ax
+    mov sp, 0x7C00
+
+    ; ending critical section
+    sti ; enable interrupts
+    
     mov si, message ; move the address of the label "message" into the SI reg
     call print
     jmp $ ; jump to itself so we never return
