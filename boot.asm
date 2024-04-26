@@ -4,6 +4,8 @@ ORG 0
 
 BITS 16 ; assemble should only use 16 bit codes
 
+jmp 0x7C0:start ; this will make the CS (code segment) = 0x7C0
+
 start:
     cli ; clear interrupts
 
@@ -20,7 +22,7 @@ start:
 
     ; ending critical section
     sti ; enable interrupts
-    
+
     mov si, message ; move the address of the label "message" into the SI reg
     call print
     jmp $ ; jump to itself so we never return
