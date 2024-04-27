@@ -5,7 +5,7 @@ ORG 0
 BITS 16 ; assemble should only use 16 bit codes
 
 ; Preparing the image to run on a real HW
-; first 3 bytes of BPB
+; first 3 bytes of BPB (BIOS Parameter Block) see https://wiki.osdev.org/FAT
 _start:
     jmp short start
     nop
