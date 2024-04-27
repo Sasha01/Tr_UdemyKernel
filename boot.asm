@@ -4,9 +4,18 @@ ORG 0
 
 BITS 16 ; assemble should only use 16 bit codes
 
-jmp 0x7C0:start ; this will make the CS (code segment) = 0x7C0
+; Preparing the image to run on a real HW
+; first 3 bytes of BPB
+_start:
+    jmp short start
+    nop
+
+; fill in the rest of BPB (33 bytes) with 0s
+times 33 db 0
 
 start:
+    jmp 0x7C0:step2 ; this will make the CS (code segment) = 0x7C0
+step2:
     cli ; clear interrupts
 
     ; starting critical section
