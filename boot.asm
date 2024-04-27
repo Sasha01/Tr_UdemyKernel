@@ -15,6 +15,23 @@ times 33 db 0
 
 start:
     jmp 0x7C0:step2 ; this will make the CS (code segment) = 0x7C0
+
+; implement interrupt 0; this is a divide by 0 exception
+handle_zero:
+    mov ah, 0x0E
+    mov al, 'A' ; print A
+    mov bx, 0
+    int 0x10
+    iret
+
+; implement interrupt 1
+handle_one:
+    mov ah, 0x0E
+    mov al, 'V' ; print V
+    mov bx, 0
+    int 0x10
+    iret
+
 step2:
     cli ; clear interrupts
 
@@ -31,6 +48,18 @@ step2:
 
     ; ending critical section
     sti ; enable interrupts
+
+    ; add interrupts to the vector table
+    mov word[ss:0x00], handle_zero
+    mov word[ss:0x02], 0x7C0
+    mov word[ss:0x04], handle_one
+    mov word[ss:0x06], 0x7C0
+
+    ; trigger a divide by 0 exception
+    mov ax, 0
+    div ax
+    ; trigger interrupt 1
+    int 1
 
     mov si, message ; move the address of the label "message" into the SI reg
     call print
